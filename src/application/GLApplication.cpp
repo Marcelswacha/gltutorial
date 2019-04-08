@@ -109,7 +109,9 @@ void GLApplication::render()
 
   glm::mat4 projection;
   projection = glm::perspective(glm::radians(_camera.fov), (float)_winWidth / _winHeight, 0.1f, 100.0f);
-  const RenderInfo info{_camera.getView(), projection };
+  static const glm::vec3 lightColor(1.f, 1.f, 1.f);
+  static const glm::vec3 lightPos(0.f, 0.f, 0.f);
+  const RenderInfo info{_camera.getView(), projection, lightColor, lightPos, _camera.pos };
 
   for (RenderObject* object : _renderObjects) {
     object->update();

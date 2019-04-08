@@ -9,6 +9,11 @@ struct RenderInfo
 {
   glm::mat4 viewMatrix;
   glm::mat4 projectionMatrix;
+
+  glm::vec3 ligthColor;
+  glm::vec3 lightPos;
+
+  glm::vec3 cameraPos;
 };
 
 struct RenderObject
