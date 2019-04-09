@@ -52,9 +52,8 @@ float cubeVertices[] = {
   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,     0.0f,  1.0f, 0.0f
 };
 
-Cube::Cube(Shader* s, float* vertices, const glm::vec3& pos, const std::string& material)
-  : RenderObject(s, material)
-  , _position(pos)
+Cube::Cube(const ObjectProperties& props)
+  : RenderObject(props)
 {
   // generate and bind VAO
   glGenVertexArrays(1, &vertexArrayObject);
@@ -64,7 +63,7 @@ Cube::Cube(Shader* s, float* vertices, const glm::vec3& pos, const std::string& 
   GLuint vbo;
   glGenBuffers(1, &vbo);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 288, vertices, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 288, properties.vertexData, GL_STATIC_DRAW);
 
   // set the vertex attributes pointers
   //position
@@ -86,7 +85,7 @@ Cube::Cube(Shader* s, float* vertices, const glm::vec3& pos, const std::string& 
   glBindVertexArray(0);
 }
 
-void Cube::draw(const RenderInfo& info)
+void Cube::draw(const SceneInfo& info)
 {
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, _firstTexture);
@@ -94,23 +93,29 @@ void Cube::draw(const RenderInfo& info)
   glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, _secondTexture);
 
+  Shader* shader = properties.shader;
   shader->use();
   shader->setInt("firstTexture", 0);
   shader->setInt("secondTexture", 1);
 
   glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(model, _position);
+  model = glm::translate(model, properties.position);
   model = glm::rotate(model, glm::radians(100 * (float)glfwGetTime()), glm::vec3(0.0f, 1.0f, 1.0f));
 
+  // 3d scene
   shader->setMat4("model", model);
   shader->setMat4("view", info.viewMatrix);
   shader->setMat4("projection", info.projectionMatrix);
-  shader->setVec3f("lightColor", info.ligthColor);
-  shader->setVec3f("lightPos", info.lightPos );
   shader->setVec3f("cameraPos", info.cameraPos);
 
+  // light
+  shader->setVec3f("light.ambient",  info.lightProperties.ambient);
+  shader->setVec3f("light.diffuse",  info.lightProperties.diffuse);
+  shader->setVec3f("light.specular", info.lightProperties.specular);
+  shader->setVec3f("light.position", info.lightPos );
+
   // materials
-  Material material = Materials[materialName];
+  Material material = properties.material;
   shader->setVec3f("material.ambient", material.ambient);
   shader->setVec3f("material.diffuse", material.diffuse);
   shader->setVec3f("material.specular", material.specular);

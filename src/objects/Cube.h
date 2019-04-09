@@ -16,14 +16,13 @@ extern float cubeVertices[];
 class Cube : public RenderObject
 {
 public:
-  Cube(Shader* s, float* vertices, const glm::vec3& pos, const std::string& material = "gold");
+  Cube(const ObjectProperties& properties);
 
-  void draw(const RenderInfo&) override;
+  void draw(const SceneInfo&) override;
 
 protected:
   GLuint _firstTexture;
   GLuint _secondTexture;
-  glm::vec3 _position;
 
   GLuint createTexture(const char* path);
 };

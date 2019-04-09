@@ -109,19 +109,27 @@ void GLApplication::render()
 
   glm::mat4 projection;
   projection = glm::perspective(glm::radians(_camera.fov), (float)_winWidth / _winHeight, 0.1f, 100.0f);
-  static const glm::vec3 lightColor(1.f, 1.f, 1.f);
-  static const glm::vec3 lightPos(0.f, 0.f, 0.f);
-  const RenderInfo info{_camera.getView(), projection, lightColor, lightPos, _camera.pos };
+  static const glm::vec3 lightPos = _lights[0]->getPosition();
+  const SceneInfo info{_camera.getView(), projection, _lights[0]->lightProperties, lightPos, _camera.pos };
 
   for (RenderObject* object : _renderObjects) {
     object->update();
     object->draw(info);
+  }
+
+  for (LightSource* light : _lights) {
+    light->draw(info);
   }
 }
 
 void GLApplication::addRenderObject(RenderObject* object)
 {
   _renderObjects.push_back(object);
+}
+
+void GLApplication::addLightSource(LightSource* light)
+{
+  _lights.push_back(light);
 }
 
 void GLApplication::mouseCallback(GLFWwindow* window, double xpos, double ypos)

@@ -2,13 +2,16 @@
 
 #include "RenderObject.h"
 
-class LightSource : public RenderObject
+class LightSource
 {
 public:
-  LightSource(Shader* s, const glm::vec3& pos);
+  LightProperties lightProperties;
 
-  void draw(const RenderInfo&) override;
+  LightSource(const LightProperties& lightProps = LightProperties(), RenderObject* obj = nullptr);
+
+  glm::vec3 getPosition() const;
+  void draw(const SceneInfo&);
 
 protected:
-  glm::vec3 _position;
+  RenderObject* _renderObject;
 };

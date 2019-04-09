@@ -1,6 +1,7 @@
 #pragma once
 
 #include "application/Camera.h"
+#include "objects/LightSource.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -27,6 +28,7 @@ public:
   void processInput();
 
   void addRenderObject(RenderObject* object);
+  void addLightSource(LightSource* light);
 
   void mouseCallback(GLFWwindow* window, double xpos, double ypos);
   void scrollCallback(GLFWwindow* window, double xOff, double yOff);
@@ -42,4 +44,5 @@ private:
   double _startX;
   double _startY;
   std::vector<RenderObject*> _renderObjects;
+  std::vector<LightSource*> _lights;
 };

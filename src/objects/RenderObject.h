@@ -3,16 +3,27 @@
 #include "Shader.h"
 
 #include "material/Material.h"
+#include "LightProperties.h"
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-struct RenderInfo
+struct ObjectProperties
+{
+  Shader* shader;
+  glm::vec3 position;
+  Material material;
+
+  float* vertexData;
+  unsigned* vertexIndices;
+};
+
+struct SceneInfo
 {
   glm::mat4 viewMatrix;
   glm::mat4 projectionMatrix;
 
-  glm::vec3 ligthColor;
+  LightProperties lightProperties;
   glm::vec3 lightPos;
 
   glm::vec3 cameraPos;
@@ -20,17 +31,16 @@ struct RenderInfo
 
 struct RenderObject
 {
-  Shader* shader;
-  std::string materialName;
+  ObjectProperties properties;
   GLuint vertexArrayObject;
 
-  RenderObject(Shader* s, const std::string& material = "gold")
-    : shader(s)
-    , materialName(material)
+  RenderObject(const ObjectProperties& props)
+    : properties(props)
+    , vertexArrayObject(0)
   {}
 
   virtual ~RenderObject(){}
 
-  virtual void draw(const RenderInfo&) {};
+  virtual void draw(const SceneInfo&) {};
   virtual void update() {};
 };

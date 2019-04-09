@@ -1,8 +1,10 @@
 
 #include "application/GLApplication.h"
 #include "objects/Cube.h"
+#include "objects/Sphere.h"
 #include "objects/LightSource.h"
 #include "Shader.h"
+#include "material/Material.h"
 
 #include <helpers/RootDir.h>
 
@@ -35,14 +37,30 @@ int main()
     Shader lightShader( (std::string(ROOT_DIR) + "res/shaders/LightSourceVS.vs").c_str(),
         (std::string(ROOT_DIR) + "res/shaders/LightSourceFS.fs").c_str() );
 
-    app.addRenderObject(new LightSource(&lightShader, glm::vec3(0.f, 0.f, 0.f)));
+//    LightProperties lightProps(
+//      glm::vec3{1.f, 0.f, 0.f},
+//      glm::vec3{0.f, 1.f, 0.f},
+//      glm::vec3{0.f, 0.f, 1.f}
+//    );
+    LightProperties lightProps;
 
+    app.addLightSource(new LightSource(
+        lightProps,
+        new Sphere(ObjectProperties{&lightShader, {0.f, 0.f, 0.f}, Material(), sphereVertices, sphereIndices})
+    ));
+
+    const Material& gold = Materials["gold"];
+    const Material& silver = Materials["silver"];
+    const Material& emerald = Materials["emerald"];
     for (int i = 0; i < 10; ++i) {
       if (i % 2 == 0) {
-        app.addRenderObject(new Cube(&cubeShader, cubeVertices, cubePositions[i]));
+        app.addRenderObject(new Cube(ObjectProperties{&cubeShader, cubePositions[i], gold, cubeVertices}));
+      }
+      else if (i % 3 == 0) {
+        app.addRenderObject(new Cube(ObjectProperties{&cubeShader, cubePositions[i], emerald, cubeVertices}));
       }
       else {
-        app.addRenderObject(new Cube(&cubeShader, cubeVertices, cubePositions[i], "silver"));
+        app.addRenderObject(new Cube(ObjectProperties{&cubeShader, cubePositions[i], silver, cubeVertices}));
       }
     }
 
