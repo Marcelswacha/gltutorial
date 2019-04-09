@@ -37,7 +37,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     vertexCode = vShaderStream.str();
     fragmentCode = fShaderStream.str();
   }
-  catch (std::ifstream::failure e) {
+  catch (std::ifstream::failure& e) {
     std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
   }
 
@@ -64,9 +64,9 @@ void Shader::setFloat(const std::string &name, float value) const
   glUniform1f(glGetUniformLocation(_id, name.c_str()), value);
 }
 
-void Shader::setVec3f(const std::string& name, float x, float y, float z) const
+void Shader::setVec3f(const std::string& name, const glm::vec3& value) const
 {
-  glUniform3f(glGetUniformLocation(_id, name.c_str()), x, y, z);
+  glUniform3f(glGetUniformLocation(_id, name.c_str()), value.x, value.y, value.z);
 }
 
 void Shader::setMat4(const std::string& name, const glm::mat4& transform) const
@@ -78,6 +78,3 @@ GLuint Shader::getID() const
 {
   return _id;
 }
-
-
-

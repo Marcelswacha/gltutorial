@@ -2,6 +2,8 @@
 
 #include "Shader.h"
 
+#include "material/Material.h"
+
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
@@ -19,10 +21,12 @@ struct RenderInfo
 struct RenderObject
 {
   Shader* shader;
+  std::string materialName;
   GLuint vertexArrayObject;
 
-  RenderObject(Shader* s)
+  RenderObject(Shader* s, const std::string& material = "gold")
     : shader(s)
+    , materialName(material)
   {}
 
   virtual ~RenderObject(){}

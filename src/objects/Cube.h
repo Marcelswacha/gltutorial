@@ -2,6 +2,8 @@
 
 #include "RenderObject.h"
 
+#include "material/Material.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -14,7 +16,7 @@ extern float cubeVertices[];
 class Cube : public RenderObject
 {
 public:
-  Cube(Shader* s, float* vertices, const glm::vec3& pos);
+  Cube(Shader* s, float* vertices, const glm::vec3& pos, const std::string& material = "gold");
 
   void draw(const RenderInfo&) override;
 

@@ -1,4 +1,6 @@
 #include "Cube.h"
+
+#include "material/Material.h"
 #include "stb_image.h"
 
 #include <helpers/RootDir.h>
@@ -50,8 +52,8 @@ float cubeVertices[] = {
   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,     0.0f,  1.0f, 0.0f
 };
 
-Cube::Cube(Shader* s, float* vertices, const glm::vec3& pos)
-  : RenderObject(s)
+Cube::Cube(Shader* s, float* vertices, const glm::vec3& pos, const std::string& material)
+  : RenderObject(s, material)
   , _position(pos)
 {
   // generate and bind VAO
@@ -70,8 +72,8 @@ Cube::Cube(Shader* s, float* vertices, const glm::vec3& pos)
   glEnableVertexAttribArray(0);
 
   // uv
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-  glEnableVertexAttribArray(1);
+//  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+//  glEnableVertexAttribArray(1);
 
   // normals
   glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
@@ -103,9 +105,16 @@ void Cube::draw(const RenderInfo& info)
   shader->setMat4("model", model);
   shader->setMat4("view", info.viewMatrix);
   shader->setMat4("projection", info.projectionMatrix);
-  shader->setVec3f("lightColor", info.ligthColor.x, info.ligthColor.y, info.ligthColor.z );
-  shader->setVec3f("lightPos", info.lightPos.x, info.lightPos.y, info.lightPos.z );
-  shader->setVec3f("cameraPos", info.cameraPos.x, info.cameraPos.y, info.cameraPos.z);
+  shader->setVec3f("lightColor", info.ligthColor);
+  shader->setVec3f("lightPos", info.lightPos );
+  shader->setVec3f("cameraPos", info.cameraPos);
+
+  // materials
+  Material material = Materials[materialName];
+  shader->setVec3f("material.ambient", material.ambient);
+  shader->setVec3f("material.diffuse", material.diffuse);
+  shader->setVec3f("material.specular", material.specular);
+  shader->setFloat("material.shininess", material.shininess);
 
   glBindVertexArray(vertexArrayObject);
   glDrawArrays(GL_TRIANGLES, 0, 36);

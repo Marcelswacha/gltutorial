@@ -29,8 +29,8 @@ int main()
   try {
     GLApplication app(AppInfo{"Learn OpenGL", winWidth, winHeight});
 
-    Shader cubeShader( (std::string(ROOT_DIR) + "res/shaders/CubeVS.vs").c_str(),
-                   (std::string(ROOT_DIR) + "res/shaders/CubeFS.fs").c_str() );
+    Shader cubeShader( (std::string(ROOT_DIR) + "res/shaders/MaterialVS.vs").c_str(),
+                   (std::string(ROOT_DIR) + "res/shaders/MaterialFS.fs").c_str() );
 
     Shader lightShader( (std::string(ROOT_DIR) + "res/shaders/LightSourceVS.vs").c_str(),
         (std::string(ROOT_DIR) + "res/shaders/LightSourceFS.fs").c_str() );
@@ -38,7 +38,12 @@ int main()
     app.addRenderObject(new LightSource(&lightShader, glm::vec3(0.f, 0.f, 0.f)));
 
     for (int i = 0; i < 10; ++i) {
-      app.addRenderObject(new Cube(&cubeShader, cubeVertices, cubePositions[i]));
+      if (i % 2 == 0) {
+        app.addRenderObject(new Cube(&cubeShader, cubeVertices, cubePositions[i]));
+      }
+      else {
+        app.addRenderObject(new Cube(&cubeShader, cubeVertices, cubePositions[i], "silver"));
+      }
     }
 
     app.run();
